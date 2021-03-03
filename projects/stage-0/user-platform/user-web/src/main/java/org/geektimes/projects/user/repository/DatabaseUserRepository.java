@@ -1,5 +1,6 @@
 package org.geektimes.projects.user.repository;
 
+import org.apache.commons.lang.StringUtils;
 import org.geektimes.function.ThrowableFunction;
 import org.geektimes.projects.user.domain.User;
 import org.geektimes.projects.user.sql.DBConnectionManager;
@@ -43,7 +44,9 @@ public class DatabaseUserRepository implements UserRepository {
 
     @Override
     public boolean save(User user) {
-        return false;
+        return executeUpdate(INSERT_USER_DML_SQL,
+                 COMMON_EXCEPTION_HANDLER, user.getName(), user.getPassword(),
+                                user.getEmail(), user.getPhoneNumber()) > 0;
     }
 
     @Override
@@ -137,6 +140,24 @@ public class DatabaseUserRepository implements UserRepository {
         return null;
     }
 
+
+    protected int executeUpdate(String sql, Consumer<Throwable> exceptionHandler, String... args) {
+        Connection connection = getConnection();
+        System.out.println("current connection is =====>" + connection);
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            System.out.println("psmt======>" + preparedStatement);
+            for (int i = 0; i < args.length; i++) {
+                System.out.println("args=====>" + args[i]);
+                preparedStatement.setString(i+1, args[i]);
+            }
+            return preparedStatement.executeUpdate();
+        } catch(Throwable e) {
+            System.err.println(e.getCause());
+            exceptionHandler.accept(e);
+        }
+        return -1;
+    }
 
     private static String mapColumnLabel(String fieldName) {
         return fieldName;

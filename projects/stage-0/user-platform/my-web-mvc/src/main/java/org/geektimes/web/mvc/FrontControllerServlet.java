@@ -117,7 +117,7 @@ public class FrontControllerServlet extends HttpServlet {
                 StringUtils.replace(prefixPath, "//", "/"));
         // 映射到 Controller
         Controller controller = controllersMapping.get(requestMappingPath);
-
+        System.out.println("current controller is ======>" + controller);
         if (controller != null) {
 
             HandlerMethodInfo handlerMethodInfo = handleMethodInfoMapping.get(requestMappingPath);
@@ -135,6 +135,7 @@ public class FrontControllerServlet extends HttpServlet {
 
                     if (controller instanceof PageController) {
                         PageController pageController = PageController.class.cast(controller);
+
                         String viewPath = pageController.execute(request, response);
                         // 页面请求 forward
                         // request -> RequestDispatcher forward
@@ -155,8 +156,11 @@ public class FrontControllerServlet extends HttpServlet {
                 }
             } catch (Throwable throwable) {
                 if (throwable.getCause() instanceof IOException) {
+                    //TODO
+                    System.err.println(throwable.getCause());
                     throw (IOException) throwable.getCause();
                 } else {
+                    System.err.println(throwable.getCause());
                     throw new ServletException(throwable.getCause());
                 }
             }

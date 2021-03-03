@@ -48,6 +48,11 @@
                 <groupId>org.apache.tomcat.maven</groupId>
                 <artifactId>tomcat7-maven-plugin</artifactId>
                 <version>2.1</version>
+                <!--
+                <configuration>
+                    <port>8090</port>
+                </configuration>
+                -->
                 <executions>
                     <execution>
                         <id>tomcat-run</id>
